@@ -1,10 +1,13 @@
 package com.trcklst.register;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trcklst.register.mock.RegisterInMock;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,10 +27,12 @@ class RegisterApplicationTests {
     private WebApplicationContext wac;
 
     private MockMvc mockMvc;
+    private ObjectMapper objectMapper;
 
     @PostConstruct
     void init() {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        objectMapper = new ObjectMapper();
     }
 
     @Test
@@ -37,8 +42,8 @@ class RegisterApplicationTests {
     @Test
     void insertTest() throws Exception {
         String response = mockMvc.perform(MockMvcRequestBuilders.post("/api/register")
-                .param("username", "user@gmail.com")
-                .param("password", "password"))
+                    .content(objectMapper.writeValueAsString(RegisterInMock.REGISTER_IN))
+                    .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn()
                 .getResponse()
