@@ -24,16 +24,21 @@ public class RegisterService {
     public Account process(RegisterIn registerIn) throws UsernameAlreadyExistsException {
         if (isUsernameExists(registerIn))
             throw new UsernameAlreadyExistsException(registerIn.getUsername());
-        Account account = registerMapper.map(registerIn);
-        account.setPassword(passwordEncoder.encode(account.getPassword()));
-        account.setAuthority(AuthoritiesType.ROLE_USER);
-        account.setId(getId());
-        account.setActive(true);
+        Account account = createAccount(registerIn);
         return accountRepository.save(account);
     }
 
     private boolean isUsernameExists(RegisterIn registerIn) {
         return accountRepository.existsByUsername(registerIn.getUsername());
+    }
+
+    private Account createAccount(RegisterIn registerIn) {
+        Account account = registerMapper.map(registerIn);
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        account.setAuthority(AuthoritiesType.ROLE_USER);
+        account.setId(getId());
+        account.setActive(true);
+        return account;
     }
 
     private Integer getId() {
