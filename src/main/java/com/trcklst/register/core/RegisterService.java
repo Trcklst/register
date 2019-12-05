@@ -1,7 +1,7 @@
 package com.trcklst.register.core;
 
-import com.trcklst.register.core.db.Account;
-import com.trcklst.register.core.db.AccountRepository;
+import com.trcklst.register.core.db.User;
+import com.trcklst.register.core.db.UserRepository;
 import com.trcklst.register.core.db.AuthoritiesType;
 import com.trcklst.register.core.dto.RegisterIn;
 import com.trcklst.register.core.exceptions.UsernameAlreadyExistsException;
@@ -18,31 +18,31 @@ public class RegisterService {
     private static final int FIRST_ID = 1;
 
     private final RegisterMapper registerMapper;
-    private final AccountRepository accountRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Account process(RegisterIn registerIn) throws UsernameAlreadyExistsException {
+    public User process(RegisterIn registerIn) throws UsernameAlreadyExistsException {
         if (isUsernameExists(registerIn))
             throw new UsernameAlreadyExistsException(registerIn.getUsername());
-        Account account = createAccount(registerIn);
-        return accountRepository.save(account);
+        User user = createUser(registerIn);
+        return userRepository.save(user);
     }
 
     private boolean isUsernameExists(RegisterIn registerIn) {
-        return accountRepository.existsByUsername(registerIn.getUsername());
+        return userRepository.existsByUsername(registerIn.getUsername());
     }
 
-    private Account createAccount(RegisterIn registerIn) {
-        Account account = registerMapper.map(registerIn);
-        account.setPassword(passwordEncoder.encode(account.getPassword()));
-        account.setAuthority(AuthoritiesType.ROLE_USER);
-        account.setId(getId());
-        account.setActive(true);
-        return account;
+    private User createUser(RegisterIn registerIn) {
+        User user = registerMapper.map(registerIn);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setAuthority(AuthoritiesType.ROLE_USER);
+        user.setId(getId());
+        user.setActive(true);
+        return user;
     }
 
     private Integer getId() {
-        Optional<Account> maxIdAccount = accountRepository.findFirstByOrderByIdDesc();
+        Optional<User> maxIdAccount = userRepository.findFirstByOrderByIdDesc();
         return maxIdAccount.map(account -> account.getId() + 1).orElse(FIRST_ID);
     }
 }

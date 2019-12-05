@@ -1,14 +1,14 @@
 package com.trcklst.register.mock;
 
-import com.trcklst.register.core.db.Account;
+import com.trcklst.register.core.db.User;
 import com.trcklst.register.core.db.AuthoritiesType;
 
-public class AccountMock {
+public class UserMock {
 
-    public static final Account ACCOUNT_VALID_USER = getAccountValidUser();
+    public static final User VALID_USER = getValidUser();
 
-    private static Account getAccountValidUser() {
-        return Account.builder()
+    private static User getValidUser() {
+        return User.builder()
                 .id(1)
                 .username("user")
                 .password("password")

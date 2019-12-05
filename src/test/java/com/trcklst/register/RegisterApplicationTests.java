@@ -1,9 +1,9 @@
 package com.trcklst.register;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.trcklst.register.core.db.AccountRepository;
+import com.trcklst.register.core.db.UserRepository;
 import com.trcklst.register.core.dto.RegisterIn;
-import com.trcklst.register.mock.AccountMock;
+import com.trcklst.register.mock.UserMock;
 import com.trcklst.register.mock.RegisterInMock;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
@@ -32,7 +32,7 @@ class RegisterApplicationTests {
     @Autowired
     private WebApplicationContext wac;
     @Autowired
-    private AccountRepository accountRepository;
+    private UserRepository userRepository;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
@@ -69,7 +69,7 @@ class RegisterApplicationTests {
 
     @Test
     void existingUsername() throws Exception {
-        accountRepository.save(AccountMock.ACCOUNT_VALID_USER);
+        userRepository.save(UserMock.VALID_USER);
         String existingUsername = "user";
         RegisterIn registerInWithExistingUsername = RegisterInMock.REGISTER_IN.toBuilder()
                 .username(existingUsername)

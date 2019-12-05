@@ -4,9 +4,9 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
 
-public interface AccountRepository extends MongoRepository<Account, Integer> {
+public interface UserRepository extends MongoRepository<User, Integer> {
 
-    Optional<Account> findFirstByOrderByIdDesc();
+    Optional<User> findFirstByOrderByIdDesc();
 
     boolean existsByUsername(String username);
 }

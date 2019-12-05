@@ -10,10 +10,10 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
 @Builder
-@Document("accounts")
+@Document("users")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Account {
+public class User {
 
     @Id
     private Integer id;
