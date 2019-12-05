@@ -1,6 +1,9 @@
 package com.trcklst.register;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trcklst.register.core.db.AccountRepository;
+import com.trcklst.register.core.dto.RegisterIn;
+import com.trcklst.register.mock.AccountMock;
 import com.trcklst.register.mock.RegisterInMock;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
@@ -11,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -23,8 +27,12 @@ import javax.annotation.PostConstruct;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class RegisterApplicationTests {
 
+    private static final String REGISTER_URI = "/api/register";
+
     @Autowired
     private WebApplicationContext wac;
+    @Autowired
+    private AccountRepository accountRepository;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
@@ -41,16 +49,38 @@ class RegisterApplicationTests {
 
     @Test
     void insertTest() throws Exception {
-        String response = mockMvc.perform(MockMvcRequestBuilders.post("/api/register")
-                    .content(objectMapper.writeValueAsString(RegisterInMock.REGISTER_IN))
-                    .contentType(MediaType.APPLICATION_JSON))
+        String response = sendRegister(RegisterInMock.REGISTER_IN)
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
         JSONObject jsonObject = new JSONObject(response);
-        Assertions.assertEquals(0, jsonObject.getInt("id"));
+        Assertions.assertEquals(1, jsonObject.getInt("id"));
         Assertions.assertEquals("user@gmail.com", jsonObject.getString("username"));
+    }
+
+    @Test
+    void emptyUsername() throws Exception {
+        RegisterIn registerInWithoutUsername = RegisterInMock.REGISTER_IN.toBuilder()
+                .username("")
+                .build();
+        sendRegister(registerInWithoutUsername).andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void existingUsername() throws Exception {
+        accountRepository.save(AccountMock.ACCOUNT_VALID_USER);
+        String existingUsername = "user";
+        RegisterIn registerInWithExistingUsername = RegisterInMock.REGISTER_IN.toBuilder()
+                .username(existingUsername)
+                .build();
+        sendRegister(registerInWithExistingUsername).andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    private ResultActions sendRegister(RegisterIn registerIn) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.post(REGISTER_URI)
+                .content(objectMapper.writeValueAsString(registerIn))
+                .contentType(MediaType.APPLICATION_JSON));
     }
 
 }

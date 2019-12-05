@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface AccountRepository extends MongoRepository<Account, Integer> {
 
     Optional<Account> findFirstByOrderByIdDesc();
+
+    boolean existsByUsername(String username);
 }

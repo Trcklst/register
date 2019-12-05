@@ -7,9 +7,9 @@ public class RegisterInMock {
     public static final RegisterIn REGISTER_IN = createRegisterIn();
 
     private static RegisterIn createRegisterIn() {
-        RegisterIn registerIn = new RegisterIn();
-        registerIn.setUsername("user@gmail.com");
-        registerIn.setPassword("password");
-        return registerIn;
+        return RegisterIn.builder()
+                .username("user@gmail.com")
+                .password("password")
+                .build();
     }
 }
