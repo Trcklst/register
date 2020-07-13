@@ -25,4 +25,6 @@ public class User {
     private AuthoritiesType authority;
     @Field
     private boolean active;
+    @Field
+    private String restPasswordToken;
 }
