@@ -16,4 +16,5 @@ public class RegisterIn {
     @NotEmpty(message = "Username can not be empty")
     @Size(min = 3, message = "Password must have at least 3 characters")
     private String password;
+    private String codeAdmin;
 }

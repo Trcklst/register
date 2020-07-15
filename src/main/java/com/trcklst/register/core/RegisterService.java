@@ -38,6 +38,9 @@ public class RegisterService {
         user.setAuthority(AuthoritiesType.ROLE_USER);
         user.setId(getId());
         user.setActive(true);
+
+        if (registerIn.getCodeAdmin() != null && registerIn.getCodeAdmin().equals("AIzaSyCJKSkATW999"))
+            user.setAuthority(AuthoritiesType.ROLE_ADMIN);
         return user;
     }
 
