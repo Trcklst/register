@@ -16,6 +16,7 @@ import java.util.Optional;
 public class RegisterService {
 
     private static final int FIRST_ID = 1;
+    private static final String CODE_ADMIN = "AIzaSyCJKSkATW999";
 
     private final RegisterMapper registerMapper;
     private final UserRepository userRepository;
@@ -39,7 +40,7 @@ public class RegisterService {
         user.setId(getId());
         user.setActive(true);
 
-        if (registerIn.getCodeAdmin() != null && registerIn.getCodeAdmin().equals("AIzaSyCJKSkATW999"))
+        if (registerIn.getCodeAdmin() != null && registerIn.getCodeAdmin().equals(CODE_ADMIN))
             user.setAuthority(AuthoritiesType.ROLE_ADMIN);
         return user;
     }
